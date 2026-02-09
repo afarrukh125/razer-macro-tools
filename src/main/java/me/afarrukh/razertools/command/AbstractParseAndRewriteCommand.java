@@ -4,8 +4,6 @@ import com.github.rvesse.airline.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
@@ -22,7 +20,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
 
 public abstract class AbstractParseAndRewriteCommand implements Runnable {
     @Option(name = "--file")
@@ -32,14 +29,6 @@ public abstract class AbstractParseAndRewriteCommand implements Runnable {
     protected String outputDir;
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractParseAndRewriteCommand.class);
-
-    public static LinkedList<Node> nodeListToList(NodeList nodeList) {
-        LinkedList<Node> items = new LinkedList<>();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            items.add(nodeList.item(i));
-        }
-        return items;
-    }
 
     @Override
     public void run() {
