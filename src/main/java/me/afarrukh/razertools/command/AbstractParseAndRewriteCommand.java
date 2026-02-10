@@ -1,13 +1,11 @@
 package me.afarrukh.razertools.command;
 
 import com.github.rvesse.airline.annotations.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,11 +17,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractParseAndRewriteCommand implements Runnable {
     @Option(name = "--file")
@@ -53,15 +52,22 @@ public abstract class AbstractParseAndRewriteCommand implements Runnable {
             removeWhitespaceNodes(document);
             Path resultingPath = writeXmlDocumentToXmlFile(document, file.getName());
             logger.info("Execution complete, file output to {}", resultingPath.toAbsolutePath());
-        } catch (IOException | ParserConfigurationException | SAXException | UnsupportedLookAndFeelException |
-                 ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (IOException
+                | ParserConfigurationException
+                | SAXException
+                | UnsupportedLookAndFeelException
+                | ClassNotFoundException
+                | InstantiationException
+                | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public abstract void execute(Document document);
 
-    final File determineFile(String fileName) throws IOException, UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    final File determineFile(String fileName)
+            throws IOException, UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException,
+                    IllegalAccessException {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         if (fileName != null) return new File(fileName);
         JFileChooser chooser = new JFileChooser();

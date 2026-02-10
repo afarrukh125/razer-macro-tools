@@ -1,14 +1,13 @@
 package me.afarrukh.razertools.utils;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.Integer.parseInt;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import java.awt.*;
 import java.util.Arrays;
-
-import static java.lang.Integer.parseInt;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MousePointerUtils {
     private static final Logger LOG = LoggerFactory.getLogger(MousePointerUtils.class);
@@ -17,8 +16,7 @@ public class MousePointerUtils {
     public static final double yFactor = 60.75;
 
     public static void main(String[] args) {
-        String values =
-                """
+        String values = """
                     (880, 5500) -> (500, 90)
                     (1760, 11000) -> (1020, 181)
                     (2520, 22000) -> (1460, 362)

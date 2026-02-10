@@ -1,10 +1,9 @@
 package me.afarrukh.razertools.command;
 
 import com.github.rvesse.airline.annotations.Command;
+import java.util.Collection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import java.util.Collection;
 
 @Command(name = "synapse4")
 public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
@@ -23,9 +22,11 @@ public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
         for (var mouseEventNode : mouseEventNodes) {
             var childNodes = mouseEventNode.getChildNodes();
             var childNode = nodeListToList(childNodes);
-            var buffers = childNode.stream().filter(node -> node.getNodeName().equals("Buffer")).toList();
+            var buffers = childNode.stream()
+                    .filter(node -> node.getNodeName().equals("Buffer"))
+                    .toList();
             var indexToDeleteUpTo = buffers.size() - 1;
-            if(buffers.size() <= 1) {
+            if (buffers.size() <= 1) {
                 continue;
             }
             for (int i = 0; i < (long) indexToDeleteUpTo; i++) {
@@ -35,16 +36,17 @@ public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
 
             replaceAllNodes(document, "time", "0");
             replaceAllNodes(document, "Number", "0.03");
-
         }
     }
 
     private static void replaceAllNodes(Document document, String key, String value) {
-        var timeNodes = nodeListToList(document.getElementsByTagName(key)).stream().map(Node::getChildNodes).map(Synapse4CleanupCommand::nodeListToList)
-                .flatMap(Collection::stream).toList();
+        var timeNodes = nodeListToList(document.getElementsByTagName(key)).stream()
+                .map(Node::getChildNodes)
+                .map(Synapse4CleanupCommand::nodeListToList)
+                .flatMap(Collection::stream)
+                .toList();
         for (var timeNode : timeNodes) {
             timeNode.setNodeValue(value);
         }
     }
-
 }
