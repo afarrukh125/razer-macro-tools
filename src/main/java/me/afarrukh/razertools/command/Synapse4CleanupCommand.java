@@ -2,6 +2,9 @@ package me.afarrukh.razertools.command;
 
 import com.github.rvesse.airline.annotations.Command;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import java.util.Collection;
 
 @Command(name = "synapse4")
 public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
@@ -29,6 +32,18 @@ public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
                 var child = buffers.get(i);
                 child.getParentNode().removeChild(child);
             }
+
+            replaceAllNodes(document, "time", "0");
+            replaceAllNodes(document, "Number", "0.03");
+
+        }
+    }
+
+    private static void replaceAllNodes(Document document, String key, String value) {
+        var timeNodes = nodeListToList(document.getElementsByTagName(key)).stream().map(Node::getChildNodes).map(Synapse4CleanupCommand::nodeListToList)
+                .flatMap(Collection::stream).toList();
+        for (var timeNode : timeNodes) {
+            timeNode.setNodeValue(value);
         }
     }
 

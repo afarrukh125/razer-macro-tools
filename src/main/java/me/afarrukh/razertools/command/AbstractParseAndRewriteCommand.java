@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -49,6 +50,7 @@ public abstract class AbstractParseAndRewriteCommand implements Runnable {
             Document document = getDocument(file);
             logger.info("Executing {}", this.getClass().getSimpleName());
             execute(document);
+            removeWhitespaceNodes(document);
             Path resultingPath = writeXmlDocumentToXmlFile(document, file.getName());
             logger.info("Execution complete, file output to {}", resultingPath.toAbsolutePath());
         } catch (IOException | ParserConfigurationException | SAXException | UnsupportedLookAndFeelException |
@@ -95,11 +97,28 @@ public abstract class AbstractParseAndRewriteCommand implements Runnable {
         Path path = generatePath(fileName);
         try {
             transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
             FileOutputStream outStream = new FileOutputStream(path.toFile());
             transformer.transform(new DOMSource(xmlDocument), new StreamResult(outStream));
             return path;
         } catch (FileNotFoundException | TransformerException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void removeWhitespaceNodes(Node node) {
+        NodeList children = node.getChildNodes();
+        for (int i = children.getLength() - 1; i >= 0; i--) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.TEXT_NODE) {
+                if (child.getNodeValue().trim().isEmpty()) {
+                    node.removeChild(child);
+                }
+            } else if (child.getNodeType() == Node.ELEMENT_NODE) {
+                removeWhitespaceNodes(child);
+            }
         }
     }
 
