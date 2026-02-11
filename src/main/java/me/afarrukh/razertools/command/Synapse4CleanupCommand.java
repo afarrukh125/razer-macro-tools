@@ -15,6 +15,8 @@ public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
 
     private static void collapseMouseMovementSynapse4(Document document) {
         collapseMouseMovement(document);
+        replaceAllNodes(document, "time", "0");
+        replaceAllNodes(document, "Number", "0.03");
     }
 
     private static void collapseMouseMovement(Document document) {
@@ -33,9 +35,6 @@ public class Synapse4CleanupCommand extends AbstractParseAndRewriteCommand {
                 var child = buffers.get(i);
                 child.getParentNode().removeChild(child);
             }
-
-            replaceAllNodes(document, "time", "0");
-            replaceAllNodes(document, "Number", "0.03");
         }
     }
 
